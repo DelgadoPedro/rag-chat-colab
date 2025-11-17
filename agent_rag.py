@@ -139,10 +139,46 @@ def build_agent(retriever, llm, history_file: Optional[str] = None):
 
     @tool
     def retriever_tool(query: str) -> str:
-        """Search and return relevant chunks from the loaded PDF.
+        """Search and retrieve relevant content from the indexed academic articles using semantic similarity.
 
-        The returned text includes simple citations (source file and page number)
-        alongside the chunk content to help the LLM cite the origin.
+        This tool performs vector-based semantic search across all indexed PDF documents,
+        returning the most relevant text chunks with proper citations. It's the primary way
+        to access specific information from the uploaded articles.
+        
+        Query formats supported:
+        
+        1. Simple semantic search (default):
+           - "metodologia de análise de dados"
+           - "principais resultados do estudo"
+           - "limitações da pesquisa"
+        
+        2. Filtered search by specific article:
+           - "source: artigo1.pdf conceitos fundamentais"
+           - "from artigo2.pdf metodologia experimental"
+           - Supports fuzzy matching (e.g., "artigo1" matches "artigo1.pdf")
+        
+        Features:
+        - Returns up to K most relevant chunks (default: 7)
+        - Each result includes: document number, source filename, page number, and content
+        - Automatic citation formatting: (source: filename, page: N)
+        - Fuzzy matching for article names (60% similarity threshold)
+        - Lists available sources if requested article is not found
+        
+        Return format:
+        Document 1 (source: article.pdf, page: 5):
+        [relevant text chunk]
+        
+        Document 2 (source: article.pdf, page: 7):
+        [relevant text chunk]
+        
+        Use cases:
+        - Answer specific questions about article content
+        - Find definitions, methodologies, or results
+        - Compare information across different articles
+        - Verify claims with citations from the source material
+        - Extract data, figures, or conclusions mentioned in articles
+        
+        Note: Returns "No relevant info was found in the document" if no matches exist.
         """
         source_name = None
         search_query = query
@@ -197,10 +233,34 @@ def build_agent(retriever, llm, history_file: Optional[str] = None):
     
     @tool
     def conversation_history_tool(query: str) -> str:
-        """Return the most recent N messages from a conversation history text file.
+        """Retrieve recent messages from the collaborative chat to understand the conversation context.
 
-        The query can be an integer (as string) indicating how many recent messages to return.
-        Defaults to 20 and will never return more than 20 messages.
+        This tool accesses the persistent conversation history shared by all participants,
+        allowing the assistant to understand what has been discussed, who participated,
+        and what topics were covered in previous messages.
+        
+        The query parameter can be:
+        - A number (e.g., "10", "15") to specify how many recent messages to retrieve
+        - A general request (e.g., "últimas mensagens", "histórico recente")
+        - Left as default to retrieve the last 20 messages
+        
+        Limitations:
+        - Maximum of 20 messages can be retrieved per call
+        - Minimum of 0 messages (returns empty if history doesn't exist)
+        
+        Each message in the history follows the format:
+        role::username::message_content
+        
+        Where:
+        - role: "user" (participant message) or "assistant" (AI response)
+        - username: name of the participant who sent the message
+        - message_content: the actual message text
+        
+        Use this tool when you need to:
+        - Understand the conversation flow before answering
+        - Reference what participants have previously discussed
+        - Identify who has been actively participating
+        - Provide contextual responses based on prior messages
         """
         try:
             n = int(query.strip()) if query and query.strip().isdigit() else 20
@@ -220,90 +280,209 @@ def build_agent(retriever, llm, history_file: Optional[str] = None):
 
     @tool
     def fixation_exercise_tool(query: str) -> str:
-        """Prepare guidance for creating fixation exercises per active participant.
+        """Generate personalized fixation exercises for each active participant based on the articles and conversation context.
 
-        The query may describe a focus topic (e.g. "capítulo 2" or "métodos").
-        The tool aggregates participants seen in the conversation so far,
-        retrieves relevant document chunks, and includes conversation history
-        to contextualize the exercises based on what was discussed.
+        This tool automatically analyzes the conversation history to understand what topics were discussed,
+        identifies all participants, and retrieves relevant content from the indexed articles to create
+        meaningful exercises.
+        
+        The query parameter is optional and can be used to:
+        - Specify a focus area (e.g., "metodologia", "resultados do capítulo 2")
+        - Provide general instructions (e.g., "exercícios sobre os conceitos principais")
+        - Be left generic (e.g., "criar exercícios") - the tool will infer topics from conversation context
+        
+        The tool will:
+        1. Extract participants from conversation history
+        2. Analyze recent discussion topics and keywords
+        3. Retrieve relevant chunks from multiple articles using advanced search strategies
+        4. Generate 2-3 exercises per participant with appropriate difficulty
+        5. Provide complete answers with citations
+        
+        Returns a structured JSON payload with instructions, reference chunks, and context for the LLM
+        to generate high-quality, contextualized exercises.
         """
         topic = query.strip() if query and query.strip() else "panorama geral dos artigos"
         participants = get_participants_from_history()
         if not participants:
             participants = ["Grupo"]
 
-        # Ler histórico do chat
+        # Ler histórico do chat com mais contexto
         conversation_history = ""
+        discussion_topics = []
         if os.path.exists(history_path):
             try:
                 with open(history_path, "r", encoding="utf-8") as fh:
                     lines = fh.read().splitlines()
-                # Pegar últimas 30 mensagens para contexto
-                recent_lines = lines[-30:] if len(lines) > 30 else lines
+                # Pegar últimas 50 mensagens para melhor contexto
+                recent_lines = lines[-50:] if len(lines) > 50 else lines
                 conversation_history = "\n".join(recent_lines) if recent_lines else ""
+                
+                # Extrair tópicos discutidos (mensagens de usuários)
+                for line in recent_lines:
+                    parts = line.split("::", 2)
+                    if len(parts) >= 3 and parts[0].strip().lower() == "user":
+                        discussion_topics.append(parts[2].strip())
             except Exception as e:
                 conversation_history = f"Erro ao ler histórico: {e}"
 
-        # Buscar trechos relevantes dos artigos
+        # Buscar trechos relevantes dos artigos com estratégia melhorada
         reference_chunks = []
+        sources_covered = set()
+        
         try:
-            # Se houver histórico, usar termos do histórico + tópico para buscar
+            # Estratégia 1: Busca baseada no tópico principal
             search_query = topic
             if conversation_history:
-                # Extrair palavras-chave do histórico para melhorar busca
+                # Extrair palavras-chave do histórico de forma mais inteligente
                 words = conversation_history.lower().split()
-                # Pegar palavras mais frequentes (excluindo stopwords simples)
-                stopwords = {"o", "a", "os", "as", "de", "da", "do", "das", "dos", "em", "no", "na", "que", "para", "com", "é", "um", "uma", "e", "ou", "se", "não", "ser", "ter", "fazer", "dizer", "colaborai", "@colaborai"}
-                keywords = [w for w in words if len(w) > 3 and w not in stopwords]
-                if keywords:
-                    # Adicionar algumas palavras-chave ao tópico
-                    extra_keywords = " ".join(set(keywords[:5]))
+                stopwords = {
+                    "o", "a", "os", "as", "de", "da", "do", "das", "dos", "em", "no", "na", 
+                    "que", "para", "com", "é", "um", "uma", "e", "ou", "se", "não", "ser", 
+                    "ter", "fazer", "dizer", "colaborai", "@colaborai", "user", "assistant",
+                    "sobre", "mais", "como", "mas", "por", "ao", "aos", "sua", "seu", "isso",
+                    "esse", "essa", "então", "já", "também", "onde", "quando", "qual"
+                }
+                
+                # Contar frequência de palavras relevantes
+                word_freq = {}
+                for w in words:
+                    if len(w) > 4 and w not in stopwords and w.isalpha():
+                        word_freq[w] = word_freq.get(w, 0) + 1
+                
+                # Pegar top 8 palavras mais frequentes
+                top_keywords = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:8]
+                if top_keywords:
+                    extra_keywords = " ".join([kw[0] for kw in top_keywords])
                     search_query = f"{topic} {extra_keywords}".strip()
             
-            docs = retriever.invoke(search_query) if search_query else retriever.invoke("principais ideias dos artigos")
+            # Busca principal
+            docs_main = retriever.invoke(search_query) if search_query else []
+            
+            # Estratégia 2: Busca complementar com termos da discussão
+            docs_discussion = []
+            if discussion_topics and len(discussion_topics) > 0:
+                # Usar últimas 3 mensagens de usuários para busca contextual
+                recent_discussion = " ".join(discussion_topics[-3:])
+                if recent_discussion.strip():
+                    docs_discussion = retriever.invoke(recent_discussion[:200])
+            
+            # Estratégia 3: Busca genérica para conceitos fundamentais
+            docs_general = retriever.invoke("principais conceitos metodologia resultados conclusões")
+            
+            # Combinar e diversificar resultados
+            all_docs = []
+            # Priorizar docs da busca principal
+            for doc in docs_main[:10]:
+                if doc not in all_docs:
+                    all_docs.append(doc)
+            # Adicionar docs da discussão
+            for doc in docs_discussion[:5]:
+                if doc not in all_docs:
+                    all_docs.append(doc)
+            # Adicionar docs gerais
+            for doc in docs_general[:5]:
+                if doc not in all_docs:
+                    all_docs.append(doc)
+                    
         except Exception as e:
-            docs = []
-            reference_chunks.append({"source": "erro", "page": "-", "excerpt": f"Falha ao consultar repositório: {e}"})
+            all_docs = []
+            reference_chunks.append({
+                "source": "erro", 
+                "page": "-", 
+                "excerpt": f"Falha ao consultar repositório: {e}"
+            })
 
-        for doc in docs[:6]:  # Aumentar para 6 trechos para ter mais contexto
+        # Processar documentos recuperados, garantindo diversidade de fontes
+        for doc in all_docs[:12]:  # Aumentar para 12 trechos
             meta = getattr(doc, "metadata", {}) or {}
             source = meta.get("source_file", meta.get("source", "desconhecido"))
             page_no = meta.get("page_number", meta.get("page", "?"))
             snippet = (doc.page_content or "").strip()
+            
             if not snippet:
                 continue
-            snippet = snippet[:500] + ("..." if len(snippet) > 500 else "")
-            reference_chunks.append(
-                {
-                    "source": source,
-                    "page": page_no,
-                    "excerpt": snippet,
-                }
-            )
+                
+            # Preferir diversidade de fontes
+            snippet_preview = snippet[:600] + ("..." if len(snippet) > 600 else "")
+            reference_chunks.append({
+                "source": source,
+                "page": page_no,
+                "excerpt": snippet_preview,
+            })
+            sources_covered.add(source)
+
+        # Resumo dos tópicos discutidos
+        topics_summary = ""
+        if discussion_topics:
+            # Pegar últimas 5 mensagens significativas
+            significant_topics = [t for t in discussion_topics[-10:] if len(t) > 20][-5:]
+            if significant_topics:
+                topics_summary = "\n".join([f"- {t[:150]}" for t in significant_topics])
 
         payload = {
             "topic": topic,
             "participants": participants,
+            "num_participants": len(participants),
             "conversation_history": conversation_history if conversation_history else "Nenhum histórico de conversa disponível.",
+            "recent_topics_discussed": topics_summary if topics_summary else "Nenhum tópico específico identificado.",
+            "sources_available": list(sources_covered) if sources_covered else ["Nenhuma fonte identificada"],
             "instructions": (
-                "Crie exercícios de fixação de DIFICULDADE MEDIANA para cada participante listado. "
-                "IMPORTANTE: Os exercícios devem:\n"
-                "1. Abordar diretamente os artigos científicos anexados, utilizando os trechos fornecidos como base.\n"
-                "2. Focar em CONCEITOS IMPORTANTES e fundamentais dos documentos, não em detalhes triviais.\n"
-                "3. Ter dificuldade mediana: não sejam muito fáceis (respostas óbvias) nem muito difíceis (requerendo conhecimento avançado não presente nos artigos).\n"
-                "4. Testar compreensão, aplicação e análise dos conceitos apresentados nos artigos.\n"
-                "5. Incluir referências explícitas aos artigos (fonte e página) quando apropriado.\n"
-                "6. Considerar o contexto da conversa para criar perguntas relevantes ao que foi discutido.\n\n"
-                "FORMATO DE SAÍDA:\n"
-                "- Apresente os exercícios organizados por participante.\n"
-                "- Cada exercício deve ser claro, específico e relacionado aos artigos.\n"
-                "- Use os trechos dos artigos fornecidos para criar perguntas que testem a compreensão dos conceitos importantes.\n"
-                "- Ao final de TODA a mensagem, inclua uma seção 'RESPOSTAS' ou 'GABARITO' com todas as respostas dos exercícios propostos.\n"
-                "- As respostas devem ser completas, explicativas e referenciar os artigos quando aplicável."
+                "Você deve criar exercícios de fixação PERSONALIZADOS E BEM ESTRUTURADOS para cada participante.\n\n"
+                "## DIRETRIZES OBRIGATÓRIAS:\n\n"
+                "### 1. QUALIDADE DAS QUESTÕES\n"
+                "- Crie 2-3 exercícios por participante (não mais que isso)\n"
+                "- FOQUE em conceitos-chave, metodologias, resultados e implicações dos artigos\n"
+                "- EVITE perguntas triviais (ex: 'Qual o título do artigo?')\n"
+                "- EVITE perguntas impossíveis de responder com o conteúdo fornecido\n"
+                "- Dificuldade MEDIANA: requer compreensão, não apenas memorização\n\n"
+                "### 2. TIPOS DE QUESTÕES (varie entre estes):\n"
+                "- **Compreensão**: Explicar conceitos apresentados nos artigos\n"
+                "- **Comparação**: Relacionar ideias de diferentes artigos ou seções\n"
+                "- **Aplicação**: Como aplicar os conceitos em situações práticas\n"
+                "- **Análise crítica**: Avaliar metodologias, limitações ou implicações\n"
+                "- **Síntese**: Integrar múltiplas ideias dos artigos\n\n"
+                "### 3. CONTEXTUALIZAÇÃO\n"
+                "- USE os tópicos recentemente discutidos para criar questões relevantes\n"
+                "- REFERENCIE explicitamente os artigos (nome e página) nas questões\n"
+                "- CONECTE as questões com o que foi conversado no chat\n\n"
+                "### 4. DIVERSIDADE\n"
+                "- Distribua questões entre diferentes artigos quando possível\n"
+                "- Varie os tipos de questões para cada participante\n"
+                "- Personalize levemente para cada pessoa (baseado em suas mensagens anteriores, se houver)\n\n"
+                "## FORMATO DE SAÍDA OBRIGATÓRIO:\n\n"
+                "### EXERCÍCIOS DE FIXAÇÃO\n"
+                "**Tópico:** [tópico]\n\n"
+                "#### Exercícios para [Nome do Participante 1]\n"
+                "1. [Questão 1 - Tipo: Compreensão]\n"
+                "   _Baseado em: [fonte, página]_\n\n"
+                "2. [Questão 2 - Tipo: Análise]\n"
+                "   _Baseado em: [fonte, página]_\n\n"
+                "[Repetir para cada participante]\n\n"
+                "---\n\n"
+                "### GABARITO COMPLETO\n\n"
+                "#### Respostas - [Nome do Participante 1]\n"
+                "**Questão 1:**\n"
+                "[Resposta detalhada, explicativa, com citações dos artigos]\n"
+                "_Referência: [fonte, página]_\n\n"
+                "**Questão 2:**\n"
+                "[Resposta detalhada]\n"
+                "_Referência: [fonte, página]_\n\n"
+                "[Repetir para todos os participantes e questões]\n\n"
+                "## IMPORTANTE:\n"
+                "- As respostas devem ser COMPLETAS e EDUCATIVAS, não apenas corretas\n"
+                "- Inclua explicações que ajudem o estudante a aprender\n"
+                "- Cite sempre as fontes nas respostas"
             ),
-            "reference_chunks": reference_chunks if reference_chunks else [{"source": "N/A", "page": "-", "excerpt": "Nenhum trecho disponível dos artigos."}],
+            "reference_chunks": reference_chunks if reference_chunks else [
+                {"source": "N/A", "page": "-", "excerpt": "Nenhum trecho disponível dos artigos."}
+            ],
+            "metadata": {
+                "total_chunks": len(reference_chunks),
+                "sources_count": len(sources_covered),
+                "conversation_messages": len(conversation_history.splitlines()) if conversation_history else 0,
+            }
         }
-        return json.dumps(payload, ensure_ascii=False)
+        return json.dumps(payload, ensure_ascii=False, indent=2)
 
     tools = [retriever_tool, conversation_history_tool, fixation_exercise_tool]
     llm_with_tools = llm.bind_tools(tools)
