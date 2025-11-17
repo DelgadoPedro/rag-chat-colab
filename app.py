@@ -220,12 +220,6 @@ def main():
                         st.session_state.messages.append(assistant_msg)
                         append_history_to_file(assistant_msg)
 
-    # st.divider()
-    # st.subheader("Collaboration Simulation")
-    # st.caption(
-    #     "This MVP uses a shared Chroma persist directory (set via `RAG_VDB_DIR` or `./vdb`). "
-    #     "Run this app in multiple browsers to simulate different users chatting over the same index."
-    # )
 
 if __name__ == "__main__":
     main()
