@@ -75,26 +75,6 @@ streamlit run app.py
 
 A aplicação será aberta automaticamente no navegador em `http://localhost:8501`
 
-## Guia de Uso
-
-### 1. Upload de Artigos
-
-1. Na barra lateral, clique em "Enviar PDF(s)"
-2. Selecione 1 a 5 artigos científicos em PDF
-3. Clique em "Construir/Atualizar índice"
-4. Aguarde a indexação (pode levar alguns minutos)
-
-### 2. Iniciar o Agente
-
-1. Na barra lateral, clique em "Criar/Recriar agente"
-2. O assistente estará pronto para uso
-
-### 3. Participar da Discussão
-
-1. Selecione seu nome no dropdown "Quem está falando agora?"
-2. Digite sua mensagem no chat
-3. Para chamar o assistente, inclua `@colaborai` na mensagem
-
 ## Diagramas
 
 ### Grafo de funcionalidades
