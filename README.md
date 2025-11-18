@@ -182,7 +182,6 @@ graph LR
     style VS fill:#50C878,stroke:#2E7D4E,stroke-width:2px,color:#fff
     style HF fill:#FF6B6B,stroke:#C44D4D,stroke-width:2px,color:#fff
 ```
----
 ## Cenário de Uso
 
 Grupo de estudantes prepara-se para uma avaliação:
