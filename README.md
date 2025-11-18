@@ -95,11 +95,9 @@ A aplicação será aberta automaticamente no navegador em `http://localhost:850
 2. Digite sua mensagem no chat
 3. Para chamar o assistente, inclua `@colaborai` na mensagem
 
-## Arquitetura
+## Diagramas
 
-# Diagrama Mermaid do Grafo LangGraph
-
-## Grafo Interativo (Mermaid)
+### Grafo de funcionalidades
 
 ```mermaid
 graph TD
@@ -122,7 +120,7 @@ graph TD
     style END fill:#E74C3C,stroke:#C0392B,stroke-width:2px,color:#fff
 ```
 
-## Diagrama de Decisão
+### Diagrama de decisão
 
 ```mermaid
 flowchart TD
@@ -158,7 +156,7 @@ flowchart TD
     style G fill:#E74C3C,stroke:#C0392B,stroke-width:2px,color:#fff
 ```
 
-## Arquitetura do Sistema
+### Arquitetura do Sistema
 
 ```mermaid
 graph LR
