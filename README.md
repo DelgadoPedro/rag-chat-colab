@@ -7,35 +7,24 @@ Confira a análise dos 3C (Comunicação, Colaboração e Coordenação) [aqui](
 ## Funcionalidades
 
 ### 1. **Chat Colaborativo Multi-Usuário**
-- 5 participantes pré-configurados: Artur, Pedro, João, Rebeca e Lucas
-- Mensagens atribuídas a cada participante
-- Histórico persistente compartilhado entre todos
+5 participantes pré-configurados: Artur, Pedro, João, Rebeca e Lucas. Mensagens atribuídas a cada participante e histórico persistente compartilhado entre todos
 
 ### 2. **Sistema RAG (Retrieval Augmented Generation)**
-- Upload de múltiplos PDFs (1-5 artigos científicos)
-- Indexação automática com embeddings locais
-- Busca semântica inteligente no conteúdo dos artigos
+Upload de múltiplos PDFs (1 a 5), com indexação automática com embeddings locais e busca semântica no conteúdo dos artigos
 
 ### 3. **Assistente IA com 3 Ferramentas Especializadas**
 
 #### **retriever_tool**
-- Busca semântica no conteúdo dos artigos
-- Suporte a filtros por documento específico
-- Retorna trechos relevantes com citações
+Realiza busca semântica no conteúdo dos artigos e retorna trechos relevantes com citações
 
 #### **conversation_history_tool**
-- Acessa histórico recente da conversa
-- Entende contexto das discussões
-- Identifica participantes ativos
+Acessa histórico recente da conversa e possibilita entendimento do contexto das discussões
 
 #### **fixation_exercise_tool**
-- Gera exercícios de fixação personalizados
-- Baseado no conteúdo dos artigos e na discussão do grupo
-- Cria e divide questões entre os participantes
+Gera exercícios de fixação personalizados para cada participante, baseados no conteúdo dos artigos e na discussão do grupo
 
 ### 4. **Invocação do Assistente**
-- Use `@colaborai` em qualquer mensagem para chamar o assistente
-- Processamento automático com acesso às ferramentas
+Use `@colaborai` em qualquer mensagem para chamar o assistente, que realiza o processamento automático com acesso às ferramentas
 
 ## Como Usar
 
