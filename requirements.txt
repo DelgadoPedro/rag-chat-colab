@@ -1,23 +1,13 @@
-# Core LangChain packages
 langchain-core>=0.3.0
 langchain-openai>=0.2.0
 langchain-text-splitters>=0.3.0
 langchain-chroma>=0.1.0
 langchain-community>=0.3.0
-
-# LangGraph for agent workflows
 langgraph>=0.2.0
-
-# Embeddings and vector storage
 sentence-transformers>=3.0.0
 chromadb>=0.5.0
-
-# PDF processing
 pypdf>=5.0.0
-
-# Web interface
 streamlit>=1.40.0
-
-# Environment management
 python-dotenv>=1.0.0
+
 
