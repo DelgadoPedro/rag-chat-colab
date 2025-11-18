@@ -1,6 +1,6 @@
 # Sistema de Discussão Acadêmica
 
-Sistema de chat colaborativo para discussão de artigos científicos com assistente inteligente baseado em RAG (Retrieval Augmented Generation). Este projeto foi desenvolvido para a disciplina SSC0723 - Sistemas Colaborativos: Fundamentos e Aplicações (2025). Ele simula um ambiente de chat onde estudantes podem discutir sobre 1 a 5 artigos acadêmicos em PDF, com suporte de um assistente IA que acessa o conteúdo dos documentos para responder perguntas e gerar exercícios de fixação.
+Sistema de chat colaborativo para discussão de artigos científicos com assistente inteligente baseado em RAG (Retrieval Augmented Generation). Este projeto foi desenvolvido para a disciplina SSC0723 - Sistemas Colaborativos: Fundamentos e Aplicações (2025). 
 
 ## Funcionalidades
 
