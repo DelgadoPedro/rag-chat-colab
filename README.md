@@ -95,8 +95,6 @@ A aplicação será aberta automaticamente no navegador em `http://localhost:850
 2. Digite sua mensagem no chat
 3. Para chamar o assistente, inclua `@colaborai` na mensagem
 
-```
-
 ## 🏗️ Arquitetura
 
 inserir imagem do grafo
