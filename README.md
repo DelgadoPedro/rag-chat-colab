@@ -16,7 +16,7 @@ Para o desenvolvimento da nossa aplicação, o cenário imaginado foi criar um S
 ### Funcionalidades
 
 ### 1. **Chat Colaborativo Multi-Usuário**
-5 participantes pré-configurados: Artur, Pedro, João, Rebeca e Lucas. Mensagens atribuídas a cada participante e histórico persistente compartilhado entre todos
+5 participantes pré-configurados: Artur, Pedro, João, Rebeca e Lucas. Mensagens atribuídas a cada participante e histórico persistente compartilhado entre todos 
 
 ### 2. **Sistema RAG (Retrieval Augmented Generation)**
 Upload de múltiplos PDFs (1 a 5), com indexação automática com embeddings locais e busca semântica no conteúdo dos artigos
