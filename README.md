@@ -99,7 +99,7 @@ A aplicação será aberta automaticamente no navegador em `http://localhost:850
 
 # Diagrama Mermaid do Grafo LangGraph
 
-## 📊 Grafo Interativo (Mermaid)
+## Grafo Interativo (Mermaid)
 
 ```mermaid
 graph TD
@@ -122,97 +122,7 @@ graph TD
     style END fill:#E74C3C,stroke:#C0392B,stroke-width:2px,color:#fff
 ```
 
-## 🔄 Fluxo Detalhado com Estados
-
-```mermaid
-stateDiagram-v2
-    [*] --> llm_processor: Mensagem do usuário
-    
-    llm_processor --> retriever_executor: Tool: retriever_tool
-    llm_processor --> history_executor: Tool: conversation_history_tool
-    llm_processor --> exercise_executor: Tool: fixation_exercise_tool
-    llm_processor --> [*]: Sem tool calls (resposta final)
-    
-    retriever_executor --> llm_processor: Resultados da busca
-    history_executor --> llm_processor: Histórico formatado
-    exercise_executor --> llm_processor: Payload JSON
-    
-    note right of llm_processor
-        • Processa mensagens
-        • Adiciona contexto histórico
-        • Invoca LLM com tools
-        • Decide roteamento
-    end note
-    
-    note right of retriever_executor
-        • Busca semântica nos PDFs
-        • Filtra por documento
-        • Formata com citações
-    end note
-    
-    note right of exercise_executor
-        • Lê histórico
-        • Busca trechos relevantes
-        • Gera payload estruturado
-    end note
-```
-
-## 📋 Sequência de Execução
-
-```mermaid
-sequenceDiagram
-    participant U as Usuário
-    participant LP as llm_processor
-    participant RE as retriever_executor
-    participant HE as history_executor
-    participant EE as exercise_executor
-    
-    U->>LP: "@colaborai Qual é a metodologia?"
-    LP->>LP: Adiciona contexto histórico
-    LP->>LP: Invoca LLM com tools
-    LP->>LP: LLM decide usar retriever_tool
-    
-    LP->>RE: Tool call: retriever_tool
-    RE->>RE: Busca semântica nos PDFs
-    RE->>RE: Formata resultados com citações
-    RE->>LP: ToolMessage com trechos
-    
-    LP->>LP: Processa resultados
-    LP->>LP: Gera resposta contextualizada
-    LP->>U: Resposta final com citações
-```
-
-## 🎯 Caso de Uso: Geração de Exercícios
-
-```mermaid
-sequenceDiagram
-    participant U as Usuário
-    participant LP as llm_processor
-    participant EE as exercise_executor
-    participant HE as conversation_history_tool
-    participant RE as retriever_tool
-    
-    U->>LP: "@colaborai Crie exercícios"
-    LP->>LP: LLM decide usar fixation_exercise_tool
-    LP->>EE: Tool call: fixation_exercise_tool
-    
-    EE->>HE: Lê histórico de conversa
-    HE-->>EE: Histórico formatado
-    
-    EE->>RE: Busca trechos relevantes
-    RE-->>EE: Trechos dos artigos
-    
-    EE->>EE: Identifica participantes
-    EE->>EE: Extrai tópicos discutidos
-    EE->>EE: Gera payload JSON estruturado
-    EE->>LP: ToolMessage com payload
-    
-    LP->>LP: Processa payload
-    LP->>LP: Gera exercícios formatados
-    LP->>U: Exercícios personalizados + gabarito
-```
-
-## 🔀 Diagrama de Decisão
+## Diagrama de Decisão
 
 ```mermaid
 flowchart TD
@@ -248,7 +158,7 @@ flowchart TD
     style G fill:#E74C3C,stroke:#C0392B,stroke-width:2px,color:#fff
 ```
 
-## 📊 Arquitetura do Sistema
+## Arquitetura do Sistema
 
 ```mermaid
 graph LR
@@ -294,26 +204,7 @@ graph LR
     style VS fill:#50C878,stroke:#2E7D4E,stroke-width:2px,color:#fff
     style HF fill:#FF6B6B,stroke:#C44D4D,stroke-width:2px,color:#fff
 ```
-
-## 🎨 Legenda
-
-- 🔵 **Azul**: Nó principal (llm_processor)
-- 🟢 **Verde**: Executor de busca (retriever)
-- 🔴 **Vermelho**: Executor de histórico (history)
-- 🟠 **Laranja**: Executor de exercícios (exercise)
-- 🟣 **Roxo**: Ponto de entrada
-- ⚫ **Preto**: Ponto de saída (END)
-
 ---
-
-**Nota**: Estes diagramas Mermaid podem ser renderizados em:
-- GitHub/GitLab (Markdown)
-- VS Code (com extensão Mermaid)
-- Obsidian
-- Notion
-- Muitos outros editores Markdown modernos
-
-
 ## Cenário de Uso
 
 Grupo de estudantes prepara-se para uma avaliação:
