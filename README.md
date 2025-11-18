@@ -2,6 +2,8 @@
 
 Sistema de chat colaborativo para discussão de artigos científicos com assistente inteligente baseado em RAG (Retrieval Augmented Generation). Este projeto foi desenvolvido para a disciplina SSC0723 - Sistemas Colaborativos: Fundamentos e Aplicações (2025). 
 
+Confira a análise dos 3C (Comunicação, Colaboração e Coordenação) [aqui](cenario_colaborativo_3c.md).
+
 ## Funcionalidades
 
 ### 1. **Chat Colaborativo Multi-Usuário**
