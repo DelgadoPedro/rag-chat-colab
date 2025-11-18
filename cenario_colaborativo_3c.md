@@ -29,24 +29,6 @@ O sistema foi desenvolvido para um cenário acadêmico de estudo colaborativo, o
    - Os exercícios são baseados tanto no conteúdo dos artigos quanto no histórico da discussão
    - Um gabarito completo é fornecido com explicações detalhadas
 
-### Características do Cenário
-
-- **Assíncrono**: Participantes podem contribuir em momentos diferentes
-- **Colaborativo**: Múltiplos usuários trabalham em conjunto para um objetivo comum
-- **Assistido por IA**: Um agente inteligente facilita o aprendizado e a compreensão
-- **Baseado em Conhecimento**: O sistema utiliza documentos reais como fonte de informação
-- **Persistente**: Histórico e índice são mantidos entre sessões
-
-### Objetivos do Cenário
-
-1. **Facilitar o aprendizado colaborativo** através de discussões estruturadas
-2. **Acelerar a compreensão** de artigos científicos complexos
-3. **Garantir que todos os participantes** tenham acesso ao mesmo conhecimento
-4. **Personalizar o aprendizado** através de exercícios adaptados ao contexto da discussão
-5. **Documentar o processo** de aprendizado através do histórico persistente
-
----
-
 ## Abordagem dos 3C
 
 O sistema implementa os **3C (Comunicação, Coordenação e Cooperação)** da teoria de sistemas colaborativos de forma integrada e complementar. Cada componente trabalha em conjunto para criar uma experiência colaborativa eficaz.
@@ -72,5 +54,6 @@ A cooperação também se manifesta na geração de exercícios, onde o sistema 
 ## Integração dos 3C no Sistema
 
 Os três componentes trabalham de forma integrada: a **Communication** permite que participantes troquem informações através do chat e do assistente, a **Coordination** organiza essas informações através do índice compartilhado e do roteamento inteligente, e a **Cooperation** faz com que as contribuições individuais beneficiem todo o grupo através do compartilhamento de conhecimento e da geração de recursos colaborativos. O resultado é um sistema que não apenas permite colaboração, mas facilita e potencializa o aprendizado colaborativo através da integração inteligente dos três componentes.
+
 
 
