@@ -2,25 +2,25 @@
 
 ## Contexto
 
-O sistema foi desenvolvido para um cenário acadêmico de estudo colaborativo, onde um grupo de estudantes trabalha em conjunto para preparar-se para uma avaliação sobre um tema específico. O sistema simula um ambiente de 5 participantes pré-configurados.
+O sistema foi desenvolvido para um cenário acadêmico de estudo colaborativo, no qual um grupo de estudantes trabalha em conjunto para preparar-se para uma avaliação sobre um tema específico. O sistema simula um ambiente de 5 participantes pré-configurados.
 
 ### Fluxo de Trabalho Colaborativo
 
 1. **Preparação Inicial**
-   - O grupo faz upload de 1 a 5 artigos científicos em PDF relacionados ao tema de estudo
-   - O sistema indexa automaticamente os documentos em um banco vetorial compartilhado
+   - O grupo faz upload de 1 a 5 artigos científicos em PDF relacionados ao tema de estudo.
+   - O sistema indexa automaticamente os documentos em um banco vetorial compartilhado.
 
 2. **Discussão Colaborativa**
-   - Cada participante pode enviar mensagens no chat, identificando-se através de um seletor
-   - As mensagens são atribuídas ao participante ativo e salvas em um histórico compartilhado
+   - Cada participante pode enviar mensagens no chat, identificando-se através de um seletor.
+   - As mensagens são atribuídas ao participante ativo e salvas em um histórico compartilhado.
 
 3. **Assistência Inteligente**
-   - Quando necessário, qualquer participante pode chamar o assistente `@colaborai`
-   - O assistente acessa o conteúdo dos artigos indexados para responder perguntas
+   - Quando necessário, qualquer participante pode chamar o assistente `@colaborai`.
+   - O assistente acessa o conteúdo dos artigos indexados para responder perguntas.
 
 4. **Geração de Exercícios**
-   - O sistema gera questões personalizadas para cada participante, após solicitação
-   - Os exercícios são baseados tanto no conteúdo dos artigos quanto no histórico da discussão
+   - O sistema gera questões personalizadas para cada participante, após solicitação.
+   - Os exercícios são baseados tanto no conteúdo dos artigos quanto no histórico da discussão.
 
 ## Abordagem dos 3C
 

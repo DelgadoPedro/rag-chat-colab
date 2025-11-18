@@ -11,7 +11,7 @@ Rebeca Vieira Carvalho - 12543530
 
 ## Descrição do Cenário Escolhido
 
-Para o desenvolvimento da nossa aplicação, o cenário imaginado foi criar um Sistema de Discussão para auxiliar grupos de estudo focados em um tópico específico. Nosso sistema tem a premissa de ser um ambiente de chat no qual os membros podem conversar e compartilhar documentos sobre o assunto escolhido. Nesse contexto, atua o *colaborai*, um agente LLM com RAG que acompanha ativamente a conversa do grupo, auxiliando os membros na discussão e no aprendizado do tópico. A seguir, detalharemos as ferramentas e funcionalidades que ele oferece.
+Para o desenvolvimento da nossa aplicação, o cenário imaginado foi o de um Sistema de Discussão capaz de auxiliar grupos de estudo focados em um tópico específico. Nosso sistema tem a premissa de ser um ambiente de chat no qual os membros podem conversar e compartilhar documentos sobre o assunto escolhido. Nesse contexto, atua o *colaborai*, um agente LLM com RAG que acompanha ativamente a conversa do grupo, auxiliando os membros na discussão e no aprendizado do tópico. A seguir, detalharemos as ferramentas e funcionalidades que ele oferece.
 
 ### Funcionalidades
 
@@ -31,6 +31,7 @@ Upload de múltiplos PDFs (1 a 5), com indexação automática com embeddings lo
 
 ### 4. **Invocação do Assistente**
 Use `@colaborai` em qualquer mensagem para chamar o assistente, que realiza o processamento automático com acesso às ferramentas
+> É necessário criar/recriar o agente antes de invocá-lo no chat após a adição de um artigo
 
 ## Diagramas
 
