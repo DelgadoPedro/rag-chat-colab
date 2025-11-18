@@ -14,14 +14,11 @@ Upload de múltiplos PDFs (1 a 5), com indexação automática com embeddings lo
 
 ### 3. **Assistente IA com 3 Ferramentas Especializadas**
 
-#### **retriever_tool**
-Realiza busca semântica no conteúdo dos artigos e retorna trechos relevantes com citações
+**retriever_tool**: Realiza busca semântica no conteúdo dos artigos e retorna trechos relevantes com citações
 
-#### **conversation_history_tool**
-Acessa histórico recente da conversa e possibilita entendimento do contexto das discussões
+**conversation_history_tool**: Acessa histórico recente da conversa e possibilita entendimento do contexto das discussões
 
-#### **fixation_exercise_tool**
-Gera exercícios de fixação personalizados para cada participante, baseados no conteúdo dos artigos e na discussão do grupo
+**fixation_exercise_tool**: Gera exercícios de fixação personalizados para cada participante, baseados no conteúdo dos artigos e na discussão do grupo
 
 ### 4. **Invocação do Assistente**
 Use `@colaborai` em qualquer mensagem para chamar o assistente, que realiza o processamento automático com acesso às ferramentas
