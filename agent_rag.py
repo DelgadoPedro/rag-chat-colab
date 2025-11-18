@@ -295,8 +295,7 @@ def build_agent(retriever, llm, history_file: Optional[str] = None):
         1. Extract participants from conversation history
         2. Analyze recent discussion topics and keywords
         3. Retrieve relevant chunks from multiple articles using advanced search strategies
-        4. Generate 2-3 exercises per participant with appropriate difficulty
-        5. Provide complete answers with citations
+        4. Generate 1 exercise per participant with appropriate difficulty
         
         Returns a structured JSON payload with instructions, reference chunks, and context for the LLM
         to generate high-quality, contextualized exercises.
@@ -453,25 +452,9 @@ def build_agent(retriever, llm, history_file: Optional[str] = None):
                 "### EXERCÍCIOS DE FIXAÇÃO\n"
                 "**Tópico:** [tópico]\n\n"
                 "#### Exercícios para [Nome do Participante 1]\n"
-                "1. [Questão 1 - Tipo: Compreensão]\n"
-                "   _Baseado em: [fonte, página]_\n\n"
-                "2. [Questão 2 - Tipo: Análise]\n"
-                "   _Baseado em: [fonte, página]_\n\n"
+                "1. [Questão 1]\n"
+                "2. [Questão 2]\n"
                 "[Repetir para cada participante]\n\n"
-                "---\n\n"
-                "### GABARITO COMPLETO\n\n"
-                "#### Respostas - [Nome do Participante 1]\n"
-                "**Questão 1:**\n"
-                "[Resposta detalhada, explicativa, com citações dos artigos]\n"
-                "_Referência: [fonte, página]_\n\n"
-                "**Questão 2:**\n"
-                "[Resposta detalhada]\n"
-                "_Referência: [fonte, página]_\n\n"
-                "[Repetir para todos os participantes e questões]\n\n"
-                "## IMPORTANTE:\n"
-                "- As respostas devem ser COMPLETAS e EDUCATIVAS, não apenas corretas\n"
-                "- Inclua explicações que ajudem o estudante a aprender\n"
-                "- Cite sempre as fontes nas respostas"
             ),
             "reference_chunks": reference_chunks if reference_chunks else [
                 {"source": "N/A", "page": "-", "excerpt": "Nenhum trecho disponível dos artigos."}

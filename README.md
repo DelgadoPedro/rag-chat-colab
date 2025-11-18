@@ -159,51 +159,7 @@ rag-chat-colab/
 6. **Processamento** → Agente decide quais ferramentas usar
 7. **Resposta** → Resposta contextualizada com citações
 
-## 🔧 Configurações Avançadas
-
-### Variáveis de Ambiente (opcionais)
-
-```env
-# Diretório do banco vetorial
-RAG_VDB_DIR=./vdb
-
-# Arquivo de histórico
-RAG_HISTORY_FILE=./vdb/conversation_history.txt
-```
-
-### Personalização do LLM
-
-Edite `agent_rag.py` para usar outro modelo:
-
-```python
-def build_llm(model: str = "seu-modelo-aqui", temperature: float = 0):
-    llm = ChatOpenAI(
-        model=model,
-        api_key=os.environ.get("OPENROUTER_API_KEY"),
-        base_url="https://openrouter.ai/api/v1",
-        temperature=temperature
-    )
-    return llm
-```
-
-### Ajustar Número de Resultados
-
-Em `app.py`, linha 187:
-```python
-retriever.search_kwargs["k"] = 5  # Altere para mais ou menos resultados
-```
-
-## 📊 Trabalho Acadêmico
-
-### Tema: Sistemas Colaborativos
-
-Este projeto demonstra conceitos de:
-- **Colaboração assíncrona**: Múltiplos usuários, histórico compartilhado
-- **Inteligência coletiva**: Discussões enriquecidas por IA
-- **Gestão do conhecimento**: Indexação e recuperação de informações
-- **Ferramentas colaborativas**: Chat, assistente virtual, geração de exercícios
-
-### Cenário de Uso
+## 📊 Cenário de Uso
 
 Grupo de estudantes prepara-se para uma avaliação:
 1. Fazem upload dos artigos obrigatórios da disciplina
@@ -211,59 +167,3 @@ Grupo de estudantes prepara-se para uma avaliação:
 3. Tiram dúvidas com o assistente `@colaborai`
 4. Geram exercícios de fixação automaticamente
 5. Praticam com as questões personalizadas
-
-## 🐛 Troubleshooting
-
-### Erro: "Crie o índice antes de iniciar o agente"
-**Solução**: Faça upload de PDFs e clique em "Construir/Atualizar índice"
-
-### Erro: "OpenRouter API key not found"
-**Solução**: Configure a variável `OPENROUTER_API_KEY` no arquivo `.env`
-
-### ChromaDB não inicializa
-**Solução**: Delete a pasta `vdb/` e reconstrua o índice
-
-### Streamlit não abre no navegador
-**Solução**: Acesse manualmente `http://localhost:8501`
-
-## 📝 Notas de Desenvolvimento
-
-### Melhorias Implementadas nas Tools
-
-#### retriever_tool
-- Busca semântica com fuzzy matching
-- Filtros por fonte específica
-- Citações automáticas formatadas
-
-#### conversation_history_tool
-- Limite configurável de mensagens
-- Formato estruturado: `role::user::content`
-- Suporte a contexto conversacional
-
-#### fixation_exercise_tool (versão melhorada)
-- **Estratégia tripla de busca**: tópico + discussão + conceitos gerais
-- **Extração inteligente de keywords**: análise de frequência
-- **Diversidade de fontes**: prioriza diferentes artigos
-- **Personalização**: considera participação individual
-- **Instruções detalhadas**: 5 tipos de questões + formato estruturado
-- **Gabarito completo**: respostas educativas com citações
-
-## 👥 Participantes do Projeto
-
-- Sistema desenvolvido para trabalho acadêmico
-- Simulação de 5 estudantes colaborando
-
-## 📄 Licença
-
-Projeto acadêmico - uso educacional
-
-## 🔗 Links Úteis
-
-- [OpenRouter](https://openrouter.ai/) - API Gateway para LLMs
-- [LangChain Docs](https://python.langchain.com/) - Documentação do framework
-- [Streamlit Docs](https://docs.streamlit.io/) - Documentação da interface
-- [ChromaDB](https://www.trychroma.com/) - Banco vetorial
-
----
-
-**Desenvolvido para a disciplina de Sistemas Colaborativos** 🎓
