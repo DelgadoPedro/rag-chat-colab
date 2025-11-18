@@ -148,7 +148,15 @@ def main():
                 st.session_state.retriever = build_retriever(vectorstore)
             st.success("Índice compartilhado encontrado.")
     except Exception as e:
-        st.warning(f"Não foi possível conectar ao índice existente: {e}")
+        error_msg = str(e)
+        if "meta tensor" in error_msg.lower() or "Cannot copy out of meta" in error_msg:
+            st.warning(
+                f"⚠️ Erro ao carregar modelo de embeddings: {error_msg}\n\n"
+                "**Solução:** Tente fazer upload dos PDFs novamente para reconstruir o índice. "
+                "O problema pode estar relacionado ao cache do modelo."
+            )
+        else:
+            st.warning(f"Não foi possível conectar ao índice existente: {e}")
 
     st.title("📄 Chat Colaborativo RAG")
     st.caption("Faça upload de até 5 artigos em PDF, discuta com o grupo e chame o agente quando precisar.")

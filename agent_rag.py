@@ -1,5 +1,3 @@
-## Agent in which a human passes continuous feedback to draft a document, until the human is satisifed 
-
 import os
 import json
 from typing import Annotated, Sequence, TypedDict, Callable, Optional
@@ -30,13 +28,88 @@ def build_llm(model: str = "nvidia/nemotron-nano-12b-v2-vl:free", temperature: f
 def build_embeddings(embedding_model_name: str = "all-MiniLM-L6-v2"):
     class SentenceTransformerEmbeddings:
         def __init__(self, model_name):
-            self.model = SentenceTransformer(model_name, device="cpu")
+            # Carregar modelo com configurações explícitas para evitar problemas com meta tensors
+            import torch
+            import os
+            import gc
+            
+            # Forçar carregamento sem meta tensors
+            os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
+            
+            # Limpar cache antes de carregar
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            
+            try:
+                # Carregar modelo diretamente no CPU, sem usar meta device
+                # Usar use_auth_token=False e local_files_only=False para garantir download correto
+                self.model = SentenceTransformer(
+                    model_name, 
+                    device="cpu",
+                    trust_remote_code=False
+                )
+                # Garantir que o modelo está no modo de avaliação
+                self.model.eval()
+                
+                # Forçar materialização: fazer uma inferência dummy para garantir que tudo está carregado
+                try:
+                    _ = self.model.encode(["test"], convert_to_tensor=False)
+                except Exception:
+                    # Se falhar, pode ser problema de meta tensor - recarregar
+                    pass
+                    
+            except Exception as e:
+                # Se houver erro, tentar recarregar sem especificar device
+                try:
+                    gc.collect()
+                    self.model = SentenceTransformer(model_name)
+                    self.model.eval()
+                    # Testar novamente
+                    _ = self.model.encode(["test"], convert_to_tensor=False)
+                except Exception as e2:
+                    raise RuntimeError(
+                        f"Failed to load embedding model {model_name}. "
+                        f"Original error: {e}. Retry error: {e2}. "
+                        f"Try deleting the model cache and retrying."
+                    )
 
         def embed_documents(self, texts):
-            return self.model.encode(texts, convert_to_tensor=False)
+            if not texts:
+                return []
+            # Garantir que não estamos usando meta tensors - converter para numpy/list
+            embeddings = self.model.encode(
+                texts, 
+                convert_to_tensor=False,
+                show_progress_bar=False,
+                normalize_embeddings=False
+            )
+            # Converter numpy array para lista Python se necessário
+            if hasattr(embeddings, 'tolist'):
+                return embeddings.tolist()
+            elif isinstance(embeddings, list):
+                return embeddings
+            else:
+                return list(embeddings)
 
         def embed_query(self, text):
-            return self.model.encode([text], convert_to_tensor=False)[0]
+            if not text:
+                return None
+            # Garantir que não estamos usando meta tensors - converter para numpy/list
+            embedding = self.model.encode(
+                [text], 
+                convert_to_tensor=False,
+                show_progress_bar=False,
+                normalize_embeddings=False
+            )
+            # Extrair primeiro elemento e converter para lista Python
+            result = embedding[0] if len(embedding) > 0 else embedding
+            if hasattr(result, 'tolist'):
+                return result.tolist()
+            elif isinstance(result, list):
+                return result
+            else:
+                return list(result)
 
     return SentenceTransformerEmbeddings(embedding_model_name)
 
@@ -519,7 +592,21 @@ def build_agent(retriever, llm, history_file: Optional[str] = None):
         except Exception:
             return []
 
-    def call_llm(state: AgentState) -> AgentState:
+    # ============================================================================
+    # NÓS DO GRAFO - Cada nó tem uma função específica e bem definida
+    # ============================================================================
+    
+    def node_llm_processor(state: AgentState) -> AgentState:
+        """
+        NÓ: Processador LLM (Entry Point)
+        
+        Responsabilidade:
+        - Processa mensagens do usuário e histórico
+        - Invoca o LLM com ferramentas disponíveis
+        - Retorna decisão sobre qual ferramenta usar (ou resposta final)
+        
+        Fluxo: Entry Point → Decisão de roteamento
+        """
         msgs = list(state["messages"])
         # Adicionar últimas 5 mensagens do histórico para contexto
         history_msgs = get_recent_history_messages(5)
@@ -528,40 +615,100 @@ def build_agent(retriever, llm, history_file: Optional[str] = None):
         message = llm_with_tools.invoke(msgs)
         return {"messages": [message]}
 
-    def take_action(state: AgentState) -> AgentState:
+    def node_retriever_tool(state: AgentState) -> AgentState:
+        """
+        NÓ: Executor da Ferramenta de Busca Semântica
+        
+        Responsabilidade:
+        - Executa retriever_tool para buscar conteúdo nos PDFs indexados
+        - Retorna trechos relevantes com citações (fonte + página)
+        - Suporta busca geral e filtrada por documento específico
+        
+        Fluxo: LLM decide usar retriever_tool → Executa busca → Retorna ao LLM
+        """
         tool_calls = state["messages"][-1].tool_calls
         results = []
         for t in tool_calls:
+            if t["name"] != "retriever_tool":
+                continue
             tool_name = t["name"]
             args_query = t["args"].get("query", "")
-            if tool_name not in tools_dict:
-                result = "Incorrect tool name; select an available tool and try again."
-            else:
-                result = tools_dict[tool_name].invoke(args_query)
+            result = tools_dict[tool_name].invoke(args_query)
             results.append(ToolMessage(tool_call_id=t["id"], name=tool_name, content=str(result)))
         return {"messages": results}
 
-    graph = StateGraph(AgentState)
-    graph.add_node("llm", call_llm)
-    graph.add_node("retriever", take_action)
-    graph.add_node("history", take_action)
-    graph.add_node("exercise", take_action)
+    def node_history_tool(state: AgentState) -> AgentState:
+        """
+        NÓ: Executor da Ferramenta de Histórico de Conversa
+        
+        Responsabilidade:
+        - Executa conversation_history_tool para acessar mensagens anteriores
+        - Fornece contexto sobre discussões passadas e participantes
+        - Permite ao agente entender o fluxo da conversa
+        
+        Fluxo: LLM decide usar conversation_history_tool → Lê histórico → Retorna ao LLM
+        """
+        tool_calls = state["messages"][-1].tool_calls
+        results = []
+        for t in tool_calls:
+            if t["name"] != "conversation_history_tool":
+                continue
+            tool_name = t["name"]
+            args_query = t["args"].get("query", "")
+            result = tools_dict[tool_name].invoke(args_query)
+            results.append(ToolMessage(tool_call_id=t["id"], name=tool_name, content=str(result)))
+        return {"messages": results}
 
-    # Route based on which tool was called.
+    def node_exercise_tool(state: AgentState) -> AgentState:
+        """
+        NÓ: Executor da Ferramenta de Geração de Exercícios
+        
+        Responsabilidade:
+        - Executa fixation_exercise_tool para gerar exercícios personalizados
+        - Combina conteúdo dos artigos com histórico de discussão
+        - Cria questões contextualizadas para cada participante
+        
+        Fluxo: LLM decide usar fixation_exercise_tool → Gera payload → Retorna ao LLM
+        """
+        tool_calls = state["messages"][-1].tool_calls
+        results = []
+        for t in tool_calls:
+            if t["name"] != "fixation_exercise_tool":
+                continue
+            tool_name = t["name"]
+            args_query = t["args"].get("query", "")
+            result = tools_dict[tool_name].invoke(args_query)
+            results.append(ToolMessage(tool_call_id=t["id"], name=tool_name, content=str(result)))
+        return {"messages": results}
+
+    # ============================================================================
+    # CONSTRUÇÃO DO GRAFO
+    # ============================================================================
+    
+    graph = StateGraph(AgentState)
+    
+    graph.add_node("llm_processor", node_llm_processor)
+    graph.add_node("retriever_executor", node_retriever_tool)
+    graph.add_node("history_executor", node_history_tool)
+    graph.add_node("exercise_executor", node_exercise_tool)
+    
+    graph.set_entry_point("llm_processor")
+    
     graph.add_conditional_edges(
-        "llm",
+        "llm_processor",
         should_continue,
         {
-            "retriever_tool": "retriever",
-            "conversation_history_tool": "history",
-            "fixation_exercise_tool": "exercise",
-            False: END,
+            "retriever_tool": "retriever_executor",
+            "conversation_history_tool": "history_executor",
+            "fixation_exercise_tool": "exercise_executor",
+            False: END,  # Sem tool calls = resposta final
         },
     )
-    graph.add_edge("retriever", "llm")
-    graph.add_edge("history", "llm")
-    graph.add_edge("exercise", "llm")
-    graph.set_entry_point("llm")
+    
+    graph.add_edge("retriever_executor", "llm_processor")
+    graph.add_edge("history_executor", "llm_processor")
+    graph.add_edge("exercise_executor", "llm_processor")
+    
     return graph.compile()
 
 
