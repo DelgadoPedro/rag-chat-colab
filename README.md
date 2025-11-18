@@ -2,7 +2,7 @@
 
 Trabalho desenvolvido para a disciplina: SSC0723 - Sistemas Colaborativos: Fundamentos e Aplicações (2025)
 
-Alunos:
+Alunos:  
 Artur De Vlieger Lima - 13671574  
 João Pedro Mori Machado - 13671831  
 Lucas Issao Omati - 13673090  
