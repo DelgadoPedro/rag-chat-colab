@@ -2,7 +2,7 @@
 
 ## Contexto
 
-O sistema foi desenvolvido para um cenário acadêmico de estudo colaborativo, onde um grupo de estudantes trabalha em conjunto para preparar-se para uma avaliação sobre um tema específico (ex: MLOps, Machine Learning, Sistemas Distribuídos, etc.). O sistema simula um ambiente de **5 participantes** pré-configurados:
+O sistema foi desenvolvido para um cenário acadêmico de estudo colaborativo, onde um grupo de estudantes trabalha em conjunto para preparar-se para uma avaliação sobre um tema específico. O sistema simula um ambiente de 5 participantes pré-configurados.
 
 ### Fluxo de Trabalho Colaborativo
 
@@ -43,6 +43,7 @@ A coordenação também ocorre através do roteamento inteligente do grafo LangG
 A cooperação é promovida através de mecanismos que fazem com que as contribuições individuais beneficiem todo o grupo. Cada participante pode fazer upload de artigos científicos, e todo esse conhecimento é agregado em um índice compartilhado, fazendo com que todos se beneficiem dos documentos que cada um adiciona. Quando um participante faz uma pergunta ou compartilha uma interpretação, essa informação fica disponível para todo o grupo através do histórico persistente. O assistente `@colaborai` atua como um membro colaborativo do grupo, não apenas respondendo perguntas, mas também gerando recursos como exercícios personalizados que sintetizam tanto o conteúdo dos artigos quanto o histórico de discussão do grupo.
 
 A cooperação também se manifesta na geração de exercícios, onde o sistema combina múltiplas fontes de informação para criar recursos de aprendizado. Os exercícios são gerados baseados no conteúdo objetivo dos artigos, no histórico de discussão que reflete os entendimentos do grupo, e na participação individual de cada membro. Embora cada participante receba exercícios personalizados, todos têm acesso ao mesmo gabarito completo, permitindo aprendizado individual e coletivo simultaneamente. O histórico preserva todo o trabalho colaborativo, permitindo que novos participantes entendam o contexto e que o grupo continue seu trabalho entre sessões, criando uma memória coletiva que sustenta a cooperação ao longo do tempo.
+
 
 
 
