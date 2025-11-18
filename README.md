@@ -75,7 +75,7 @@ streamlit run app.py
 
 A aplicação será aberta automaticamente no navegador em `http://localhost:8501`
 
-## 📖 Guia de Uso
+## Guia de Uso
 
 ### 1. Upload de Artigos
 
