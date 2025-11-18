@@ -9,23 +9,18 @@ O sistema foi desenvolvido para um cenário acadêmico de estudo colaborativo, o
 1. **Preparação Inicial**
    - O grupo faz upload de 1 a 5 artigos científicos em PDF relacionados ao tema de estudo
    - O sistema indexa automaticamente os documentos em um banco vetorial compartilhado
-   - Todos os participantes têm acesso ao mesmo índice de conhecimento
 
 2. **Discussão Colaborativa**
    - Cada participante pode enviar mensagens no chat, identificando-se através de um seletor
    - As mensagens são atribuídas ao participante ativo e salvas em um histórico compartilhado
-   - O grupo discute conceitos, tira dúvidas e compartilha insights sobre os artigos
 
 3. **Assistência Inteligente**
    - Quando necessário, qualquer participante pode chamar o assistente `@colaborai`
    - O assistente acessa o conteúdo dos artigos indexados para responder perguntas
-   - As respostas incluem citações precisas (fonte + página) dos documentos
 
 4. **Geração de Exercícios**
-   - Após discussão suficiente, o grupo pode solicitar exercícios de fixação
-   - O sistema gera questões personalizadas para cada participante
+   - O sistema gera questões personalizadas para cada participante, após solicitação
    - Os exercícios são baseados tanto no conteúdo dos artigos quanto no histórico da discussão
-   - Um gabarito completo é fornecido com explicações detalhadas
 
 ## Abordagem dos 3C
 
@@ -49,9 +44,6 @@ A cooperação é promovida através de mecanismos que fazem com que as contribu
 
 A cooperação também se manifesta na geração de exercícios, onde o sistema combina múltiplas fontes de informação para criar recursos de aprendizado. Os exercícios são gerados baseados no conteúdo objetivo dos artigos, no histórico de discussão que reflete os entendimentos do grupo, e na participação individual de cada membro. Embora cada participante receba exercícios personalizados, todos têm acesso ao mesmo gabarito completo, permitindo aprendizado individual e coletivo simultaneamente. O histórico preserva todo o trabalho colaborativo, permitindo que novos participantes entendam o contexto e que o grupo continue seu trabalho entre sessões, criando uma memória coletiva que sustenta a cooperação ao longo do tempo.
 
-### Integração dos 3C no Sistema
-
-Os três componentes trabalham de forma integrada: a **Communication** permite que participantes troquem informações através do chat e do assistente, a **Coordination** organiza essas informações através do índice compartilhado e do roteamento inteligente, e a **Cooperation** faz com que as contribuições individuais beneficiem todo o grupo através do compartilhamento de conhecimento e da geração de recursos colaborativos. O resultado é um sistema que não apenas permite colaboração, mas facilita e potencializa o aprendizado colaborativo através da integração inteligente dos três componentes.
 
 
 
