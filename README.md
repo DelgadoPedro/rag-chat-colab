@@ -1,10 +1,6 @@
-# Chat Colaborativo RAG - Sistema de Discussão Acadêmica
+# Sistema de Discussão Acadêmica
 
-Sistema de chat colaborativo para discussão de artigos científicos com assistente inteligente baseado em RAG (Retrieval Augmented Generation).
-
-## 📋 Descrição
-
-Este projeto foi desenvolvido para um trabalho de faculdade sobre **Sistemas Colaborativos**. Simula um ambiente de chat onde estudantes podem discutir sobre 1 a 5 artigos acadêmicos em PDF, com suporte de um assistente IA que acessa o conteúdo dos documentos para responder perguntas e gerar exercícios de fixação.
+Sistema de chat colaborativo para discussão de artigos científicos com assistente inteligente baseado em RAG (Retrieval Augmented Generation). Este projeto foi desenvolvido para a disciplina SSC0723 - Sistemas Colaborativos: Fundamentos e Aplicações (2025). Ele simula um ambiente de chat onde estudantes podem discutir sobre 1 a 5 artigos acadêmicos em PDF, com suporte de um assistente IA que acessa o conteúdo dos documentos para responder perguntas e gerar exercícios de fixação.
 
 ## 🎯 Funcionalidades
 
@@ -17,7 +13,6 @@ Este projeto foi desenvolvido para um trabalho de faculdade sobre **Sistemas Col
 - Upload de múltiplos PDFs (1-5 artigos científicos)
 - Indexação automática com embeddings locais
 - Busca semântica inteligente no conteúdo dos artigos
-- Citações automáticas (fonte + página)
 
 ### 3. **Assistente IA com 3 Ferramentas Especializadas**
 
@@ -100,64 +95,11 @@ A aplicação será aberta automaticamente no navegador em `http://localhost:850
 2. Digite sua mensagem no chat
 3. Para chamar o assistente, inclua `@colaborai` na mensagem
 
-### 4. Exemplos de Uso
-
-**Pergunta sobre conteúdo:**
-```
-@colaborai Qual é a metodologia utilizada no artigo sobre machine learning?
-```
-
-**Busca em artigo específico:**
-```
-@colaborai source: artigo1.pdf quais foram os principais resultados?
-```
-
-**Gerar exercícios:**
-```
-@colaborai Crie exercícios de fixação sobre os conceitos discutidos
-```
-
-**Exercícios sobre tópico específico:**
-```
-@colaborai Gere exercícios focando na metodologia dos artigos
 ```
 
 ## 🏗️ Arquitetura
 
-### Componentes Principais
-
-```
-rag-chat-colab/
-├── app.py                  # Interface Streamlit
-├── agent_rag.py            # Motor RAG com ferramentas
-├── agent.py                # Agente simples (teste)
-├── requirements.txt        # Dependências
-├── .env                    # Configurações (não versionado)
-└── vdb/                    # Banco vetorial e histórico
-    ├── chroma.sqlite3      # ChromaDB
-    ├── conversation_history.txt  # Histórico
-    └── indexed_files.txt   # Registro de arquivos
-```
-
-### Tecnologias Utilizadas
-
-- **LangChain**: Framework para aplicações LLM
-- **LangGraph**: Orquestração de agentes com grafos
-- **ChromaDB**: Banco de dados vetorial
-- **Sentence Transformers**: Embeddings locais (all-MiniLM-L6-v2)
-- **Streamlit**: Interface web
-- **OpenRouter**: Gateway para LLMs (Nvidia Nemotron gratuito)
-- **PyPDF**: Processamento de PDFs
-
-### Fluxo de Dados
-
-1. **Upload** → PDFs são divididos em chunks de 1000 caracteres
-2. **Embedding** → Chunks são vetorizados localmente
-3. **Indexação** → Vetores armazenados no ChromaDB
-4. **Discussão** → Mensagens salvas em histórico compartilhado
-5. **Invocação** → `@colaborai` ativa o agente
-6. **Processamento** → Agente decide quais ferramentas usar
-7. **Resposta** → Resposta contextualizada com citações
+inserir imagem do grafo
 
 ## 📊 Cenário de Uso
 
@@ -167,3 +109,5 @@ Grupo de estudantes prepara-se para uma avaliação:
 3. Tiram dúvidas com o assistente `@colaborai`
 4. Geram exercícios de fixação automaticamente
 5. Praticam com as questões personalizadas
+
+inserir vídeo
