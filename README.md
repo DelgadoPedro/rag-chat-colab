@@ -2,7 +2,7 @@
 
 Sistema de chat colaborativo para discussão de artigos científicos com assistente inteligente baseado em RAG (Retrieval Augmented Generation). Este projeto foi desenvolvido para a disciplina SSC0723 - Sistemas Colaborativos: Fundamentos e Aplicações (2025). Ele simula um ambiente de chat onde estudantes podem discutir sobre 1 a 5 artigos acadêmicos em PDF, com suporte de um assistente IA que acessa o conteúdo dos documentos para responder perguntas e gerar exercícios de fixação.
 
-## 🎯 Funcionalidades
+## Funcionalidades
 
 ### 1. **Chat Colaborativo Multi-Usuário**
 - 5 participantes pré-configurados: Artur, Pedro, João, Rebeca e Lucas
@@ -16,17 +16,17 @@ Sistema de chat colaborativo para discussão de artigos científicos com assiste
 
 ### 3. **Assistente IA com 3 Ferramentas Especializadas**
 
-#### 🔍 **retriever_tool**
+#### **retriever_tool**
 - Busca semântica no conteúdo dos artigos
 - Suporte a filtros por documento específico
 - Retorna trechos relevantes com citações
 
-#### 📜 **conversation_history_tool**
+#### **conversation_history_tool**
 - Acessa histórico recente da conversa
 - Entende contexto das discussões
 - Identifica participantes ativos
 
-#### 📝 **fixation_exercise_tool**
+#### **fixation_exercise_tool**
 - Gera exercícios de fixação personalizados
 - Baseado no conteúdo dos artigos E na discussão do grupo
 - Cria 2-3 questões por participante
@@ -38,12 +38,12 @@ Sistema de chat colaborativo para discussão de artigos científicos com assiste
 - Processamento automático com acesso às ferramentas
 - Respostas contextualizadas e citadas
 
-## 🚀 Como Usar
+## Como Usar
 
 ### Pré-requisitos
 
 - Python 3.11 ou superior
-- Chave de API do OpenRouter (gratuita para alguns modelos)
+- Chave de API do OpenRouter
 
 ### Instalação
 
@@ -95,11 +95,11 @@ A aplicação será aberta automaticamente no navegador em `http://localhost:850
 2. Digite sua mensagem no chat
 3. Para chamar o assistente, inclua `@colaborai` na mensagem
 
-## 🏗️ Arquitetura
+## Arquitetura
 
 inserir imagem do grafo
 
-## 📊 Cenário de Uso
+## Cenário de Uso
 
 Grupo de estudantes prepara-se para uma avaliação:
 1. Fazem upload dos artigos obrigatórios da disciplina
