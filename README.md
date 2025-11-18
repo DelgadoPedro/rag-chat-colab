@@ -184,13 +184,3 @@ graph LR
     style VS fill:#50C878,stroke:#2E7D4E,stroke-width:2px,color:#fff
     style HF fill:#FF6B6B,stroke:#C44D4D,stroke-width:2px,color:#fff
 ```
-## Cenário de Uso
-
-Grupo de estudantes prepara-se para uma avaliação:
-1. Fazem upload dos artigos obrigatórios da disciplina
-2. Discutem conceitos principais no chat
-3. Tiram dúvidas com o assistente `@colaborai`
-4. Geram exercícios de fixação automaticamente
-5. Praticam com as questões personalizadas
-
-inserir vídeo
