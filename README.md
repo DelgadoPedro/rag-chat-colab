@@ -30,15 +30,12 @@ Confira a análise dos 3C (Comunicação, Colaboração e Coordenação) [aqui](
 
 #### **fixation_exercise_tool**
 - Gera exercícios de fixação personalizados
-- Baseado no conteúdo dos artigos E na discussão do grupo
-- Cria 2-3 questões por participante
-- Inclui gabarito completo com explicações
-- Varia tipos de questões: compreensão, análise, aplicação, síntese
+- Baseado no conteúdo dos artigos e na discussão do grupo
+- Cria e divide questões entre os participantes
 
 ### 4. **Invocação do Assistente**
 - Use `@colaborai` em qualquer mensagem para chamar o assistente
 - Processamento automático com acesso às ferramentas
-- Respostas contextualizadas e citadas
 
 ## Como Usar
 
